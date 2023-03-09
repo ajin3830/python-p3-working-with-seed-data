@@ -10,7 +10,32 @@ from models import Game
 fake = Faker()
 
 if __name__ == '__main__':
-    
+
     engine = create_engine('sqlite:///seed_db.db')
     Session = sessionmaker(bind=engine)
     session = Session()
+
+    session.query(Game).delete()
+    session.commit()  
+
+    # instead of manually creating Game instances, use Faker
+    # botw = Game(title="Breath of the Wild", platform="Switch", genre="Adventure", price=60)
+    # ffvii = Game(title="Final Fantasy VII", platform="Playstation", genre="RPG", price=30)
+    # mk8 = Game(title="Mario Kart 8", platform="Switch", genre="Racing", price=50)
+    # ccs = Game(title="Candy Crush Saga", platform="Mobile", genre="Puzzle", price=0)
+    # session.add_all([botw, ffvii, mk8])
+    # session.commit()
+
+    print('Seeding games...') #console msg so we see output when this seed file runs
+
+    games = [
+        Game(
+            title=fake.name(),
+            genre=fake.word(),
+            platform=fake.word(),
+            price=random.randint(0, 60)
+        )
+    for i in range(50)
+    ]
+    session.add_all(games)
+    session.commit()
